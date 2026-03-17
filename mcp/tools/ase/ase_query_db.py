@@ -6,6 +6,7 @@ Returns lightweight summaries without full atomic structures by default.
 
 from typing import Dict, Any, Optional, List, Literal, Annotated
 from pydantic import Field
+import numpy as np
 
 
 def ase_query_db(
@@ -15,7 +16,6 @@ def ase_query_db(
             description="Path to the ASE database file to query (e.g., 'simulations.db', './data/results.db')."
         )
     ],
-    
     formula: Annotated[
         Optional[str],
         Field(
@@ -24,7 +24,6 @@ def ase_query_db(
             "Use with formula_mode to specify exact or reduced formula matching."
         )
     ] = None,
-    
     formula_mode: Annotated[
         Literal["exact", "reduced"],
         Field(
@@ -33,7 +32,6 @@ def ase_query_db(
             "'exact': match exact formula including stoichiometry."
         )
     ] = "reduced",
-    
     tags: Annotated[
         Optional[List[str]],
         Field(
@@ -43,7 +41,6 @@ def ase_query_db(
             "Note: Store tags in metadata using 'keywords' or 'labels' key to avoid conflicts with ASE's atom tags."
         )
     ] = None,
-    
     energy_min: Annotated[
         Optional[float],
         Field(
@@ -51,7 +48,6 @@ def ase_query_db(
             description="Minimum energy in eV. Filter results with energy >= this value."
         )
     ] = None,
-    
     energy_max: Annotated[
         Optional[float],
         Field(
@@ -59,7 +55,6 @@ def ase_query_db(
             description="Maximum energy in eV. Filter results with energy <= this value."
         )
     ] = None,
-    
     property_filters: Annotated[
         Optional[Dict[str, Any]],
         Field(
@@ -69,7 +64,6 @@ def ase_query_db(
             "For numeric ranges, use tuples: {'volume': (10, 50)} for 10 <= volume <= 50."
         )
     ] = None,
-    
     calculator_name: Annotated[
         Optional[str],
         Field(
@@ -77,7 +71,6 @@ def ase_query_db(
             description="Filter by calculator name (e.g., 'vasp', 'gpaw', 'lammps', 'emt')."
         )
     ] = None,
-    
     limit: Annotated[
         int,
         Field(
@@ -87,7 +80,6 @@ def ase_query_db(
             description="Maximum number of results to return (1-10000). Default: 100."
         )
     ] = 100,
-    
     sort_by: Annotated[
         Optional[str],
         Field(
@@ -96,7 +88,6 @@ def ase_query_db(
             "or any metadata key. If None, returns in database order."
         )
     ] = None,
-    
     sort_order: Annotated[
         Literal["asc", "desc"],
         Field(
@@ -104,7 +95,6 @@ def ase_query_db(
             description="Sort order: 'asc' (ascending, lowest first) or 'desc' (descending, highest first)."
         )
     ] = "asc",
-    
     include_atoms: Annotated[
         bool,
         Field(
@@ -114,7 +104,6 @@ def ase_query_db(
             "Set to True only when you need to reconstruct structures."
         )
     ] = False,
-    
     unique_key: Annotated[
         Optional[str],
         Field(
@@ -221,7 +210,6 @@ def ase_query_db(
         # Post-process results for additional filters
         filtered_rows = []
         for row in rows:
-            # Formula filter (reduced mode)
             if formula and formula_mode == "reduced":
                 try:
                     from ase.formula import Formula
@@ -230,14 +218,12 @@ def ase_query_db(
                     if row_formula.reduce()[0] != query_formula.reduce()[0]:
                         continue
                 except:
-                    # Fallback to string comparison
                     if row.formula != formula:
                         continue
             
             # Tags filter
             if tags:
                 row_tags = ''
-                # Check multiple possible keys for tags (keywords, labels, tags)
                 key_value_pairs = getattr(row, 'key_value_pairs', {})
                 for tag_key in ['keywords', 'labels', 'tags']:
                     if tag_key in key_value_pairs:
@@ -251,7 +237,6 @@ def ase_query_db(
                 else:
                     row_tags_list = []
                 
-                # Check if any of the query tags match
                 if not any(tag in row_tags_list for tag in tags):
                     continue
             
@@ -317,7 +302,10 @@ def ase_query_db(
                 result['mass'] = float(row.mass)
             
             if hasattr(row, 'constrained_forces') and row.constrained_forces is not None:
-                result['constrained_forces'] = bool(row.constrained_forces)
+                if isinstance(row.constrained_forces, np.ndarray):
+                    result['constrained_forces'] = row.constrained_forces.tolist()
+                else:
+                    result['constrained_forces'] = row.constrained_forces
             
             if hasattr(row, 'key_value_pairs'):
                 result['metadata'] = dict(row.key_value_pairs)

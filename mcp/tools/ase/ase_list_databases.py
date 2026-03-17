@@ -21,7 +21,6 @@ def ase_list_databases(
             "Paths can be absolute or relative to workspace."
         )
     ] = None,
-    
     pattern: Annotated[
         str,
         Field(
@@ -31,7 +30,6 @@ def ase_list_databases(
             "Use wildcards: * (any chars), ? (single char), [abc] (char set)."
         )
     ] = "*.db",
-    
     recursive: Annotated[
         bool,
         Field(
@@ -40,7 +38,6 @@ def ase_list_databases(
             "If False, only searches specified directories (not subdirectories)."
         )
     ] = False,
-    
     validate: Annotated[
         bool,
         Field(
@@ -49,7 +46,6 @@ def ase_list_databases(
             "If False, returns all matching .db files without validation (faster but may include non-ASE files)."
         )
     ] = True,
-    
     include_summary: Annotated[
         bool,
         Field(

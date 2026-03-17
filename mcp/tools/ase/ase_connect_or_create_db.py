@@ -19,7 +19,6 @@ def ase_connect_or_create_db(
             "For MySQL: 'mysql://user:password@host:port/database'."
         )
     ],
-    
     backend: Annotated[
         Literal["sqlite", "postgresql", "mysql"],
         Field(
@@ -28,7 +27,6 @@ def ase_connect_or_create_db(
             "'postgresql' (remote server), 'mysql' (remote server)."
         )
     ] = "sqlite",
-    
     create_if_missing: Annotated[
         bool,
         Field(
@@ -37,7 +35,6 @@ def ase_connect_or_create_db(
             "If False, returns an error if the database is not found."
         )
     ] = True,
-    
     connect_timeout: Annotated[
         Optional[int],
         Field(
@@ -49,7 +46,6 @@ def ase_connect_or_create_db(
             "SQLite (local files) typically don't use explicit timeouts."
         )
     ] = 30,
-    
     append: Annotated[
         bool,
         Field(
@@ -80,7 +76,6 @@ def ase_connect_or_create_db(
     """
     
     try:
-        # Import ASE database module
         try:
             from ase.db import connect
         except ImportError:
@@ -114,7 +109,7 @@ def ase_connect_or_create_db(
                     "error": f"Database file '{db_path}' does not exist and create_if_missing=False"
                 }
         else:
-            db_existed = None  # Unknown until we try to connect
+            db_existed = None
         
         # Build connection string
         if backend == "sqlite":
@@ -133,7 +128,6 @@ def ase_connect_or_create_db(
             if backend == "sqlite":
                 db = connect(connection_string, append=append)
             else:
-                # For remote databases, timeout may be handled differently
                 db = connect(connection_string, append=append)
         except Exception as conn_err:
             if not create_if_missing:

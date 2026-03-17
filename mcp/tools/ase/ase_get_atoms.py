@@ -4,8 +4,9 @@ Used to fetch stored structures for reuse in subsequent calculations.
 Returns serialized atoms with calculator results and metadata.
 """
 
-from typing import Dict, Any, List, Optional, Union, Annotated
+from typing import Dict, Any, List, Union, Annotated
 from pydantic import Field
+import numpy as np
 
 
 def ase_get_atoms(
@@ -15,7 +16,6 @@ def ase_get_atoms(
             description="Path to the ASE database file (e.g., 'simulations.db', './data/results.db')."
         )
     ],
-    
     row_ids: Annotated[
         Union[int, List[int]],
         Field(
@@ -23,7 +23,6 @@ def ase_get_atoms(
             "Example: 42 or [1, 5, 10]. Get IDs from ase_query_db or ase_store_result."
         )
     ],
-    
     include_results: Annotated[
         bool,
         Field(
@@ -32,7 +31,6 @@ def ase_get_atoms(
             "If False, returns only the atomic structure."
         )
     ] = True,
-    
     include_metadata: Annotated[
         bool,
         Field(
@@ -41,7 +39,6 @@ def ase_get_atoms(
             "If False, returns only atoms and results."
         )
     ] = True,
-    
     include_data: Annotated[
         bool,
         Field(
@@ -74,7 +71,6 @@ def ase_get_atoms(
     """
     
     try:
-        # Import ASE modules
         try:
             from ase.db import connect
         except ImportError:
@@ -84,7 +80,6 @@ def ase_get_atoms(
                         "Install it with: pip install ase"
             }
         
-        # Normalize row_ids to list
         if isinstance(row_ids, int):
             row_ids = [row_ids]
         elif not isinstance(row_ids, list):
@@ -93,7 +88,6 @@ def ase_get_atoms(
                 "error": f"row_ids must be an integer or list of integers, got {type(row_ids).__name__}"
             }
         
-        # Validate row_ids
         if not row_ids:
             return {
                 "success": False,
@@ -123,13 +117,11 @@ def ase_get_atoms(
         
         for row_id in row_ids:
             try:
-                # Get row from database
                 row = db.get(id=row_id)
-                
-                # Extract atoms
                 try:
                     atoms = row.toatoms()
                     atoms_dict = atoms.todict()
+                    atoms_dict = _serialize_arrays(atoms_dict)
                 except Exception as e:
                     return {
                         "success": False,
@@ -138,7 +130,6 @@ def ase_get_atoms(
                         "error": f"Failed to extract Atoms object from row {row_id}: {str(e)}"
                     }
                 
-                # Build entry
                 entry = {
                     "id": row.id,
                     "formula": row.formula,
@@ -146,7 +137,6 @@ def ase_get_atoms(
                     "atoms_dict": atoms_dict
                 }
                 
-                # Add calculator results if requested
                 if include_results:
                     results = {}
                     
@@ -185,12 +175,10 @@ def ase_get_atoms(
                     if results:
                         entry['results'] = results
                 
-                # Add metadata if requested
                 if include_metadata:
                     if hasattr(row, 'key_value_pairs') and row.key_value_pairs:
                         entry['metadata'] = dict(row.key_value_pairs)
                     
-                    # Add additional info
                     if hasattr(row, 'calculator') and row.calculator:
                         entry['calculator'] = row.calculator
                     
@@ -200,7 +188,6 @@ def ase_get_atoms(
                     if hasattr(row, 'user'):
                         entry['user'] = row.user
                 
-                # Add data blob if requested
                 if include_data:
                     if hasattr(row, 'data') and row.data:
                         entry['data'] = row.data
@@ -208,7 +195,6 @@ def ase_get_atoms(
                 atoms_list.append(entry)
                 
             except KeyError:
-                # Row ID not found
                 not_found.append(row_id)
             except Exception as e:
                 return {
@@ -236,7 +222,6 @@ def ase_get_atoms(
                 "error": f"Row IDs not found in database: {not_found}"
             }
         
-        # Build response
         result = {
             "success": True,
             "count": len(atoms_list),
@@ -265,3 +250,16 @@ def ase_get_atoms(
             "error": f"Unexpected error retrieving atoms: {str(e)}",
             "error_type": type(e).__name__
         }
+
+
+def _serialize_arrays(obj):
+    """Recursively convert numpy arrays to lists for JSON serialization."""
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, dict):
+        return {key: _serialize_arrays(value) for key, value in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [_serialize_arrays(item) for item in obj]
+    elif isinstance(obj, (np.integer, np.floating)):
+        return float(obj)
+    return obj

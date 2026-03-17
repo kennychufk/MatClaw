@@ -16,7 +16,6 @@ def ase_store_result(
             "Must be an existing database or will be created if it doesn't exist."
         )
     ],
-    
     atoms_dict: Annotated[
         Dict[str, Any],
         Field(
@@ -25,7 +24,6 @@ def ase_store_result(
             "Must contain 'numbers', 'positions', and 'cell' keys at minimum."
         )
     ],
-    
     results: Annotated[
         Optional[Dict[str, Any]],
         Field(
@@ -36,7 +34,6 @@ def ase_store_result(
             "These are automatically extracted from calculator if attached to atoms."
         )
     ] = None,
-    
     key_value_pairs: Annotated[
         Optional[Dict[str, Any]],
         Field(
@@ -47,7 +44,6 @@ def ase_store_result(
             "'tags': 'cathode,LiFePO4'}. All values must be JSON-serializable."
         )
     ] = None,
-    
     unique_key: Annotated[
         Optional[str],
         Field(
@@ -57,7 +53,6 @@ def ase_store_result(
             "Useful for avoiding duplicates (e.g., use formula + structure hash)."
         )
     ] = None,
-    
     data: Annotated[
         Optional[Dict[str, Any]],
         Field(
