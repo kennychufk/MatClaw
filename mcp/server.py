@@ -5,9 +5,11 @@ MatClaw MCP Server
 from dotenv import load_dotenv
 import logging
 from mcp.server.fastmcp import FastMCP
-from tools.data_retrieval import (
+from tools.pubchem import (
     pubchem_search_compounds, 
     pubchem_get_compound_properties, 
+)
+from tools.materials_project import (
     mp_search_materials, 
     mp_get_material_properties, 
     mp_get_detailed_property_data,
