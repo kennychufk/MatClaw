@@ -1,7 +1,7 @@
 """
 Tests for pymatgen_prototype_builder tool.
 
-Run with: pytest tests/test_pymatgen/test_prototype_builder.py -v
+Run with: pytest tests/pymatgen/test_prototype_builder.py -v
 """
 
 import pytest

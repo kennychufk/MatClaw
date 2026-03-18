@@ -13,7 +13,7 @@ present for a given material accept either a populated result or the "no data"
 success=False response grace-fully; structural assertions are skipped only in
 those cases via pytest.skip().
 
-Run with: pytest tests/test_mp/test_mp_get_detailed_property_data.py -v
+Run with: pytest tests/materials_project/test_mp_get_detailed_property_data.py -v
 Skip automatically when MP_API_KEY is not set.
 """
 

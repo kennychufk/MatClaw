@@ -16,17 +16,17 @@ pytest -v
 
 ### Run specific test file
 ```bash
-pytest tests/test_pymatgen/test_substitution_generator.py
+pytest tests/pymatgen/test_substitution_generator.py
 ```
 
 ### Run specific test class
 ```bash
-pytest tests/test_pymatgen/test_substitution_generator.py::TestSimpleSubstitution
+pytest tests/pymatgen/test_substitution_generator.py::TestSimpleSubstitution
 ```
 
 ### Run specific test
 ```bash
-pytest tests/test_pymatgen/test_substitution_generator.py::TestSimpleSubstitution::test_simple_substitution_success
+pytest tests/pymatgen/test_substitution_generator.py::TestSimpleSubstitution::test_simple_substitution_success
 ```
 
 ### Run tests matching pattern

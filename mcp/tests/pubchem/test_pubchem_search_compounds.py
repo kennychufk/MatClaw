@@ -5,7 +5,7 @@ These tests make real HTTP requests to PubChem. An internet connection is
 required. Well-known stable compounds (aspirin CID 2244, caffeine CID 2519,
 ethanol CID 702, water CID 962) are used so results are consistent.
 
-Run with: pytest tests/test_pubchem/test_pubchem_search_compounds.py -v
+Run with: pytest tests/pubchem/test_pubchem_search_compounds.py -v
 """
 
 import pytest
