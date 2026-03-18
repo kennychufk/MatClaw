@@ -1,7 +1,7 @@
 """
 Tests for ase_connect_or_create_db tool.
 
-Run with: pytest tests/test_ase/test_ase_connect_or_create_db.py -v
+Run with: pytest tests/ase/test_ase_connect_or_create_db.py -v
 """
 
 import pytest

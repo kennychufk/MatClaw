@@ -1,7 +1,7 @@
 """
 Tests for pymatgen_ion_exchange_generator tool.
 
-Run with: pytest tests/test_pymatgen/test_ion_exchange_generator.py -v
+Run with: pytest tests/pymatgen/test_ion_exchange_generator.py -v
 """
 
 import pytest

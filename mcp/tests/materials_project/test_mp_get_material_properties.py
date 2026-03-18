@@ -9,7 +9,7 @@ Well-known stable materials are used for consistent results:
     - NaCl        mp-22862  NaCl       cubic,        insulator
     - LiFePO4     mp-19017  LiFePO4    orthorhombic, stable cathode
 
-Run with: pytest tests/test_mp/test_mp_get_material_properties.py -v
+Run with: pytest tests/materials_project/test_mp_get_material_properties.py -v
 Skip automatically when MP_API_KEY is not set.
 """
 

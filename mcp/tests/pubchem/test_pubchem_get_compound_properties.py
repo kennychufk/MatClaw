@@ -8,7 +8,7 @@ required. Well-known stable compounds are used so results are consistent:
     - Ethanol   CID 702    C2H6O
     - Water     CID 962    H2O
 
-Run with: pytest tests/test_pubchem/test_pubchem_get_compound_properties.py -v
+Run with: pytest tests/pubchem/test_pubchem_get_compound_properties.py -v
 """
 
 import pytest

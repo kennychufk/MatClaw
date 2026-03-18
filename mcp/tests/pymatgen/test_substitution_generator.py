@@ -1,7 +1,7 @@
 """
 Tests for pymatgen_substitution_generator tool.
 
-Run with: pytest tests/test_pymatgen/test_substitution_generator.py -v
+Run with: pytest tests/pymatgen/test_substitution_generator.py -v
 """
 
 import pytest

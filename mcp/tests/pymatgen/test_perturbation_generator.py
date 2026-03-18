@@ -1,7 +1,7 @@
 """
 Tests for pymatgen_perturbation_generator tool.
 
-Run with: pytest tests/test_pymatgen/test_perturbation_generator.py -v
+Run with: pytest tests/pymatgen/test_perturbation_generator.py -v
 """
 
 import pytest

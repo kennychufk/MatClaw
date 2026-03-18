@@ -1,7 +1,7 @@
 """
 Tests for ase_store_result tool.
 
-Run with: pytest tests/test_ase/test_ase_store_result.py -v
+Run with: pytest tests/ase/test_ase_store_result.py -v
 """
 
 import pytest

@@ -1,7 +1,7 @@
 """
 Tests for ase_list_databases tool.
 
-Run with: pytest tests/test_ase/test_ase_list_databases.py -v
+Run with: pytest tests/ase/test_ase_list_databases.py -v
 """
 
 import pytest

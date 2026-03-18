@@ -1,7 +1,7 @@
 """
 Tests for ase_query tool.
 
-Run with: pytest tests/test_ase/test_ase_query.py -v
+Run with: pytest tests/ase/test_ase_query.py -v
 """
 
 import pytest

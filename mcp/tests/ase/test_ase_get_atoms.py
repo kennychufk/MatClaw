@@ -1,7 +1,7 @@
 """
 Tests for ase_get_atoms tool.
 
-Run with: pytest tests/test_ase/test_ase_get_atoms.py -v
+Run with: pytest tests/ase/test_ase_get_atoms.py -v
 """
 
 import pytest

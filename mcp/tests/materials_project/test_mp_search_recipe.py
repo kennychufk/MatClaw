@@ -13,7 +13,7 @@ Some tests call pytest.skip() gracefully when the synthesis endpoint is not
 available in the current MP API version (the tool returns success=False with an
 error message about endpoint availability in that case).
 
-Run with: pytest tests/test_mp/test_mp_search_recipe.py -v
+Run with: pytest tests/materials_project/test_mp_search_recipe.py -v
 Skip automatically when MP_API_KEY is not set.
 """
 
