@@ -36,6 +36,10 @@ from tools.urdf import (
     urdf_fix,
     urdf_inspect,
 )
+from tools.analysis import (
+    structure_validator,
+    composition_analyzer,
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -76,6 +80,10 @@ mcp.tool()(pymatgen_sqs_generator)
 mcp.tool()(urdf_validate)
 mcp.tool()(urdf_fix)
 mcp.tool()(urdf_inspect)
+
+# Analysis tools for materials screening
+mcp.tool()(structure_validator)
+mcp.tool()(composition_analyzer)
 
 
 if __name__ == "__main__":
