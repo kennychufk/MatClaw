@@ -26,6 +26,12 @@ The server has two kinds of dependencies:
 
 All pip packages are installed automatically by `setup.sh`. The `setup.sh` script also attempts to install `enumlib` via conda if conda is available.
 
+For the fine-tuned chemistry LLM tool, install extra dependencies manually:
+
+```bash
+pip install torch transformers
+```
+
 ### Why two package managers?
 
 `enumlib` is a compiled C++ binary (`enum.x`) that implements the Hart-Forcade enumeration algorithm. It is:
@@ -169,3 +175,5 @@ python -m pytest tests/pymatgen/test_enumeration_generator.py -v
 | `pymatgen_ion_exchange_generator` | Generate ion-exchanged variants of a structure |
 | `pymatgen_perturbation_generator` | Randomly perturb atomic positions and lattice |
 | `pymatgen_enumeration_generator` | Enumerate ordered supercell decorations of disordered structures (**requires enumlib**) |
+| `predict_molecule_binding` | Predict molecule-target binding label with fixed fine-tuned LLM prompt (1 active / 0 inactive) |
+| `predict_molecule_synthesizability` | Predict molecule synthesizability label with fixed fine-tuned LLM prompt (1 yes / 0 no / 2 unknown) |
