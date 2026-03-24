@@ -10,9 +10,6 @@ Generates feasible synthesis routes for inorganic materials based on:
 This tool queries Materials Project for actual precursors used in literature
 synthesis recipes and uses template-based generation for process parameters.
 Requires MP_API_KEY environment variable.
-
-For full literature recipes with detailed steps, use mp_search_recipe and
-convert_mp_recipes_to_synthesis_routes tools in combination.
 """
 
 from typing import Dict, Any, List, Optional, Annotated, Tuple
@@ -63,15 +60,12 @@ def template_route_generator(
     ] = None,
 ) -> Dict[str, Any]:
     """
-    Generate synthesis routes for inorganic materials using Materials Project precursor data.
+    Generate template synthesis routes for inorganic materials using Materials Project precursor data.
     
     Queries Materials Project for literature-based precursors, then applies template-based
     process generation (temperature, time, atmosphere) using materials chemistry heuristics.
     
     Requires MP_API_KEY environment variable to be set.
-    
-    For full literature recipes with detailed steps, use mp_search_recipe followed by
-    convert_mp_recipes_to_synthesis_routes instead.
     
     Returns
     -------
