@@ -6,13 +6,15 @@ from dotenv import load_dotenv
 import logging
 from mcp.server.fastmcp import FastMCP
 from tools.pubchem import (
+    pubchem_search_compounds,
+    pubchem_get_compound_properties,
     pubchem_search_compounds, 
     pubchem_get_compound_properties,
     pubchem_get_safety_data,
 )
 from tools.materials_project import (
-    mp_search_materials, 
-    mp_get_material_properties, 
+    mp_search_materials,
+    mp_get_material_properties,
     mp_get_detailed_property_data,
     mp_search_recipe
 )
@@ -58,6 +60,10 @@ from tools.urdf import (
 )
 from tools.lula import (
     lula_generate_robot_description,
+)
+from tools.chem_llm import (
+    predict_molecule_binding,
+    predict_molecule_synthesizability,
 )
 
 # Set up logging
@@ -122,6 +128,10 @@ mcp.tool()(urdf_inspect)
 
 # Lula robot description generation
 mcp.tool()(lula_generate_robot_description)
+
+# Fine-tuned chemistry LLM tools
+mcp.tool()(predict_molecule_binding)
+mcp.tool()(predict_molecule_synthesizability)
 
 
 if __name__ == "__main__":
