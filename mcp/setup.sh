@@ -6,10 +6,17 @@
 #   bash setup.sh            # full setup (venv + pip + enumlib check)
 #   bash setup.sh --no-enum  # skip enumlib installation
 #
-# Supports: Linux, macOS, Windows WSL.
-# Does NOT run natively on Windows CMD/PowerShell — use WSL for enumlib.
+# Supports: Linux, macOS, Windows (Git Bash/WSL).
+# Note: enumlib installation requires conda or WSL on Windows.
 # ---------------------------------------------------------------------------
 set -euo pipefail
+
+# Detect OS
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
+  IS_WINDOWS=true
+else
+  IS_WINDOWS=false
+fi
 
 SKIP_ENUM=false
 for arg in "$@"; do
@@ -18,6 +25,30 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
+
+# ---------------------------------------------------------------------------
+# 0. Python version check
+# ---------------------------------------------------------------------------
+echo ""
+echo "==> Checking Python version..."
+
+PYTHON_VERSION=$(python --version 2>&1 | awk '{print $2}')
+PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
+PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+
+echo "    Detected: Python $PYTHON_VERSION"
+
+if [[ "$PYTHON_MAJOR" -ne 3 ]] || { [[ "$PYTHON_MINOR" -ne 10 ]] && [[ "$PYTHON_MINOR" -ne 11 ]]; }; then
+  echo ""
+  echo "    ERROR: Python 3.10 or 3.11 is required."
+  echo "    You are using Python $PYTHON_VERSION."
+  echo ""
+  echo "    Please install Python 3.10 or 3.11 and ensure it is available as 'python'."
+  echo "    Alternatively, use 'python3.10' or 'python3.11' explicitly and modify this script."
+  exit 1
+fi
+
+echo "      Python version is compatible."
 
 # ---------------------------------------------------------------------------
 # 1. Python venv
@@ -32,16 +63,20 @@ else
   echo "    venv already exists — skipping creation."
 fi
 
-# Activate
-source venv/bin/activate
+# Activate venv (OS-specific path)
+if [[ "$IS_WINDOWS" == true ]]; then
+  source venv/Scripts/activate
+else
+  source venv/bin/activate
+fi
 
 # ---------------------------------------------------------------------------
 # 2. Pip dependencies
 # ---------------------------------------------------------------------------
 echo ""
 echo "==> Installing pip dependencies from requirements.txt..."
-pip install --upgrade pip --quiet
-pip install -r requirements.txt --quiet
+python -m pip install --upgrade pip --quiet --disable-pip-version-check
+python -m pip install -r requirements.txt
 echo "    Done."
 
 # ---------------------------------------------------------------------------
@@ -104,7 +139,11 @@ fi
 echo ""
 echo "==> Setup complete."
 echo ""
-echo "    Activate the venv with:   source venv/bin/activate"
+if [[ "$IS_WINDOWS" == true ]]; then
+  echo "    Activate the venv with:   source venv/Scripts/activate"
+else
+  echo "    Activate the venv with:   source venv/bin/activate"
+fi
 echo "    Run the server with:      python server.py"
 echo "    Run tests with:           python -m pytest tests/ -v"
 echo ""
